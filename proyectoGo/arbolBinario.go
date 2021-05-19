@@ -124,7 +124,7 @@ func main() {
 		raiz: nod,
 		tamanno: 0,
 	}
-	
+
 	arbol.agregarNodoArbol(10)
 	arbol.agregarNodoArbol(10)
 	arbol.agregarNodoArbol(20)
