@@ -1,30 +1,31 @@
 package main
 
-import "fmt"
+import (
+	"container/list"
+	"fmt"
+)
 
 type Nodo struct {
-
-	clave int
+	clave             int
 	cantidadRepetidas int
-	comparaciones int
-	hijoIzquierdo *Nodo
-	hijoDerecho *Nodo
-	padre *Nodo
-
+	comparaciones     int
+	hijoIzquierdo     *Nodo
+	hijoDerecho       *Nodo
+	padre             *Nodo
 }
 
-func (nod *Nodo)sumarRepetidas(){
+func (nod *Nodo) sumarRepetidas() {
 	nod.cantidadRepetidas += 1
 }
 
-func (nod *Nodo) comparacionesCantidad(comp int){
+func (nod *Nodo) comparacionesCantidad(comp int) {
 	nod.comparaciones = comp
 }
 
 //***********************************************************************
 
 type arbolBinarioBusqueda struct {
-	raiz *Nodo
+	raiz    *Nodo
 	tamanno int
 }
 
@@ -32,12 +33,12 @@ func (arbol *arbolBinarioBusqueda) agregarTamanno() {
 	arbol.tamanno += 1
 }
 
-func (arbol *arbolBinarioBusqueda) longitudArbol () int {
+func (arbol *arbolBinarioBusqueda) longitudArbol() int {
 	return arbol.tamanno
 }
 
-func (arbol *arbolBinarioBusqueda) insertarP( llave int, nodoActual *Nodo) {
-	if llave < nodoActual.clave{
+func (arbol *arbolBinarioBusqueda) insertarP(llave int, nodoActual *Nodo) {
+	if llave < nodoActual.clave {
 		if nodoActual.hijoIzquierdo != nil {
 			arbol.insertarP(llave, nodoActual.hijoIzquierdo)
 		} else {
@@ -46,8 +47,8 @@ func (arbol *arbolBinarioBusqueda) insertarP( llave int, nodoActual *Nodo) {
 			arbol.agregarTamanno()
 		}
 
-	} else if llave > nodoActual.clave{
-		if nodoActual.hijoDerecho != nil{
+	} else if llave > nodoActual.clave {
+		if nodoActual.hijoDerecho != nil {
 			arbol.insertarP(llave, nodoActual.hijoDerecho)
 		} else {
 			nodoActual.hijoDerecho = &Nodo{clave: llave, hijoIzquierdo: nil, hijoDerecho: nil, padre: nodoActual}
@@ -74,13 +75,13 @@ func (arbol *arbolBinarioBusqueda) agregarNodoArbol(llave int) {
 }
 
 func (arbol *arbolBinarioBusqueda) obtenerP(llave int, nodoActual Nodo, comparaciones int) *Nodo {
-	if &nodoActual == nil{
+	if &nodoActual == nil {
 		return nil
-	}else if nodoActual.clave == llave{
+	} else if nodoActual.clave == llave {
 		comparaciones = comparaciones + 1
 		nodoActual.comparacionesCantidad(comparaciones)
 		return &nodoActual
-	} else if llave < nodoActual.clave{
+	} else if llave < nodoActual.clave {
 		return arbol.obtenerP(llave, *nodoActual.hijoIzquierdo, comparaciones+1)
 	} else {
 		return arbol.obtenerP(llave, *nodoActual.hijoDerecho, comparaciones+1)
@@ -88,9 +89,9 @@ func (arbol *arbolBinarioBusqueda) obtenerP(llave int, nodoActual Nodo, comparac
 }
 
 func (arbol *arbolBinarioBusqueda) obtener(llave int) *Nodo {
-	if &arbol.raiz != nil{
+	if &arbol.raiz != nil {
 		res := arbol.obtenerP(llave, *arbol.raiz, 0)
-		if res != nil{
+		if res != nil {
 			return res
 		} else {
 			return nil
@@ -100,17 +101,22 @@ func (arbol *arbolBinarioBusqueda) obtener(llave int) *Nodo {
 	}
 }
 
-func (arbol *arbolBinarioBusqueda) getItem(llave int) {
+func (arbol *arbolBinarioBusqueda) getItem(llave int) *list.List {
 	nod := arbol.obtener(llave)
-	if nod != nil{
-		fmt.Println("Se encontró realizando ", nod.comparaciones, " comparaciones")
+	lista := list.New()
+	if nod != nil {
+		lista.PushFront(true)
 	} else {
-		fmt.Println("No se encontró, se realizaron: ", arbol.longitudArbol(), " comparaciones")
+		lista.PushFront(false)
 	}
+	lista.PushBack(nod.comparaciones)
+	return lista
+
+	//lista.Front().Value para saber si se insertó o no, lista.Back().Value para la cantidad de comparaciones
 }
 
-func inOrden(nodoAct *Nodo){
-	if nodoAct != nil{
+func inOrden(nodoAct *Nodo) {
+	if nodoAct != nil {
 		inOrden(nodoAct.hijoIzquierdo)
 		fmt.Println(nodoAct.clave, " ", nodoAct.cantidadRepetidas)
 		inOrden(nodoAct.hijoDerecho)
@@ -121,7 +127,7 @@ func main() {
 	var nod *Nodo
 	nod = nil
 	arbol := arbolBinarioBusqueda{
-		raiz: nod,
+		raiz:    nod,
 		tamanno: 0,
 	}
 
@@ -137,5 +143,9 @@ func main() {
 
 	fmt.Println("\n")
 
-	arbol.getItem(5)
+	lis := list.New()
+	lis = arbol.getItem(5)
+
+	fmt.Println("Se encotró: ", lis.Front().Value)
+	fmt.Println("Cant de comparaciones: ", lis.Back().Value)
 }
