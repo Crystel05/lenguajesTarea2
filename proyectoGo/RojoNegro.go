@@ -1,12 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 //Variables Globales
-var comparaciones int
-var encontrado bool
-var cantComparaciones int
-var totalComparaciones int
 
 const (
 	red   byte = byte(0)
@@ -18,12 +16,18 @@ type RBNode struct {
 	cont                int
 	color               byte
 	nivel               int
+	comparaciones       int
 	left, right, parent *RBNode
 }
 
 type RBTree struct {
-	root    *RBNode
-	tamanio int
+	root               *RBNode
+	tamanio            int
+	comparaciones      int
+	encontrado         bool
+	cantComparaciones  int
+	totalComparaciones int
+	totalNodos         int
 }
 
 func (arbolRN *RBTree) printTree(root *RBNode) {
@@ -43,10 +47,12 @@ func (arbolRN *RBTree) printTree(root *RBNode) {
 }
 
 func (arbolRN *RBTree) insert(root *RBNode, newNode *RBNode) *RBNode {
-	comparaciones = comparaciones + 1
+	arbolRN.comparaciones = arbolRN.comparaciones + 1
 	/* If the tree is empty, return a new node */
 	if root == nil {
 		//newNode.nivel = comparaciones - 1
+		arbolRN.totalNodos += 1
+		newNode.comparaciones = arbolRN.comparaciones
 		return newNode
 	}
 	/* Otherwise, recur down the tree */
@@ -67,6 +73,7 @@ func (arbolRN *RBTree) insert(root *RBNode, newNode *RBNode) *RBNode {
 
 // This function fixes violations
 // caused by BST insertion
+
 func (arbolRN *RBTree) fixViolation(root *RBNode, pt *RBNode) {
 	var parent_pt *RBNode = nil
 	var grand_parent_pt *RBNode = nil
@@ -168,7 +175,7 @@ func (arbolRN *RBTree) addValue(value int) int {
 		parent: nil,
 	}
 
-	comparaciones = 0
+	arbolRN.comparaciones = 0
 	// Do a normal BST insert
 	arbolRN.root = arbolRN.insert(arbolRN.root, &Node)
 
@@ -177,9 +184,9 @@ func (arbolRN *RBTree) addValue(value int) int {
 		arbolRN.fixViolation(arbolRN.root, &Node)
 	}
 
-	fmt.Println(fmt.Sprint("Comparaciones ", comparaciones))
+	fmt.Println(fmt.Sprint("Comparaciones ", arbolRN.comparaciones))
 
-	return comparaciones
+	return arbolRN.comparaciones
 
 }
 
@@ -225,10 +232,10 @@ func (arbolRN *RBTree) rotateRight(root *RBNode, pt *RBNode) {
 
 func (arbolRN *RBTree) busqueda(root *RBNode, value int) {
 	if root != nil {
-		comparaciones = comparaciones + 1
+		arbolRN.comparaciones = arbolRN.comparaciones + 1
 		if value == root.value {
-			encontrado = true
-			totalComparaciones = totalComparaciones + comparaciones
+			arbolRN.encontrado = true
+			arbolRN.totalComparaciones = arbolRN.totalComparaciones + arbolRN.comparaciones
 		} else {
 			if value < root.value {
 				arbolRN.busqueda(root.left, value)
@@ -237,33 +244,76 @@ func (arbolRN *RBTree) busqueda(root *RBNode, value int) {
 			}
 		}
 	}
-
 }
 
-func (arbolRN *RBTree) getAltura(root *RBNode, altura int) {
-	//if root.getAltura
+func (arbolRN *RBTree) getAltura(root *RBNode) int {
+	a := 1
+	b := 1
+	if root.left == nil && root.right == nil {
+		return 1
+	} else {
+		a = arbolRN.getAltura(root.left)
+		b = arbolRN.getAltura(root.right)
+		if a < b {
+			return b + 1
+		} else {
+			return a + 1
+		}
+	}
+}
+
+/*func (arbolRN *RBTree) getAlturaPromedio(root *RBNode, nivel int) int {
+	if root.left == nil && root.right == nil {
+		return 1
+	} else {
+		a = arbolRN.getAltura(root.left)
+		b = arbolRN.getAltura(root.right)
+		if a < b {
+			return b + 1
+		} else {
+			return a + 1
+		}
+	}
+}*/
+
+func (arbolRN *RBTree) getAlturaMaxima() int {
+	return arbolRN.totalNodos - 1
 }
 
 func (arbolRN *RBTree) busquedaRN(value int) (int, bool) {
-	comparaciones = 0
-	encontrado = false
-	cantComparaciones = cantComparaciones + 1
+	arbolRN.comparaciones = 0
+	arbolRN.encontrado = false
+	arbolRN.cantComparaciones = arbolRN.cantComparaciones + 1
 
 	arbolRN.busqueda(arbolRN.root, value)
 
-	return comparaciones, encontrado
+	return arbolRN.comparaciones, arbolRN.encontrado
 
 }
 
 func (arbolRN *RBTree) insercion(array [8]int) {
-	cantComparaciones = 0
-	totalComparaciones = 0
+	arbolRN.cantComparaciones = 0
+	arbolRN.totalComparaciones = 0
+	arbolRN.totalNodos = 0
 
 	for i := 0; i < 8; i++ {
 		fmt.Println(array[i])
 		arbolRN.addValue(array[i])
 	}
 
+}
+
+func (arbolRN *RBTree) busquedas(array [8]int) {
+
+	for i := 0; i < 8; i++ {
+		fmt.Println(array[i])
+		fmt.Println(arbolRN.busquedaRN(array[i]))
+	}
+}
+
+func (arbolRN *RBTree) getDensidad() float64 {
+	a := float64(arbolRN.totalNodos) / float64(arbolRN.getAltura(arbolRN.root))
+	return a
 }
 
 func main() {
@@ -280,16 +330,14 @@ func main() {
 
 	arbolRN.insercion(array)
 
-	//	arbolRN.addValue(10)
-	//	arbolRN.addValue(52)
-	//	arbolRN.addValue(6)
-	//	arbolRN.addValue(60)
-	//	arbolRN.addValue(70)
-	//	arbolRN.addValue(80)
-	//	arbolRN.addValue(65)
-	//	arbolRN.addValue(60)
 	arbolRN.printTree(arbolRN.root)
 
 	//	fmt.Println(arbolRN.busquedaRN(90))
+	fmt.Println(arbolRN.totalNodos)
+	fmt.Println(arbolRN.getAlturaMaxima())
+	fmt.Println(arbolRN.getAltura(arbolRN.root))
+
+	fmt.Println(arbolRN.getDensidad())
+	//arbolRN.busquedas(array)
 
 }
