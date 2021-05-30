@@ -33,15 +33,15 @@ type RBTree struct {
 func (arbolRN *RBTree) printTree(root *RBNode) {
 
 	fmt.Println(fmt.Sprint("Valor ", root.value))
-	fmt.Println(fmt.Sprint("Color ", root.color))
-	fmt.Println(fmt.Sprint("Contador ", root.cont))
-	fmt.Println(fmt.Sprint("Nivel ", root.nivel))
+	//fmt.Println(fmt.Sprint("Color ", root.color))
+	//fmt.Println(fmt.Sprint("Contador ", root.cont))
+	//fmt.Println(fmt.Sprint("Nivel ", root.nivel))
 	if root.left != nil {
-		fmt.Println("Izquierda")
+		//fmt.Println("Izquierda")
 		arbolRN.printTree(root.left)
 	}
 	if root.right != nil {
-		fmt.Println("Derecha")
+		//fmt.Println("Derecha")
 		arbolRN.printTree(root.right)
 	}
 }
@@ -68,7 +68,6 @@ func (arbolRN *RBTree) insert(root *RBNode, newNode *RBNode) *RBNode {
 	}
 	/* return the (unchanged) node pointer */
 	return root
-
 }
 
 // This function fixes violations
@@ -246,14 +245,14 @@ func (arbolRN *RBTree) busqueda(root *RBNode, value int) {
 	}
 }
 
-func (arbolRN *RBTree) getAltura(root *RBNode) int {
+func (arbolRN *RBTree) getAlturaMaxima(root *RBNode) int {
 	a := 1
 	b := 1
 	if root.left == nil && root.right == nil {
 		return 1
 	} else {
-		a = arbolRN.getAltura(root.left)
-		b = arbolRN.getAltura(root.right)
+		a = arbolRN.getAlturaMaxima(root.left)
+		b = arbolRN.getAlturaMaxima(root.right)
 		if a < b {
 			return b + 1
 		} else {
@@ -262,22 +261,38 @@ func (arbolRN *RBTree) getAltura(root *RBNode) int {
 	}
 }
 
-/*func (arbolRN *RBTree) getAlturaPromedio(root *RBNode, nivel int) int {
+func (arbolRN *RBTree) getAltPromedio(root *RBNode, nivel int) int {
+	println(nivel)
+	a := 1
+	b := 1
 	if root.left == nil && root.right == nil {
-		return 1
+		return nivel
 	} else {
-		a = arbolRN.getAltura(root.left)
-		b = arbolRN.getAltura(root.right)
-		if a < b {
-			return b + 1
-		} else {
-			return a + 1
-		}
+		a = arbolRN.getAltPromedio(root.left, nivel+1)
+		b = arbolRN.getAltPromedio(root.right, nivel+1)
+		return nivel + a + b
 	}
-}*/
+}
 
-func (arbolRN *RBTree) getAlturaMaxima() int {
-	return arbolRN.totalNodos - 1
+func (arbolRN *RBTree) getCompPromedio(root *RBNode, nivel int) int {
+	println(nivel)
+	a := 1
+	b := 1
+	if root.left == nil && root.right == nil {
+		return nivel * root.cont
+	} else {
+		a = arbolRN.getAltPromedio(root.left, nivel+1)
+		b = arbolRN.getAltPromedio(root.right, nivel+1)
+		return (nivel * root.cont) + a + b
+	}
+}
+
+func (arbolRN *RBTree) getAlturaPromedio(root *RBNode) float64 {
+	return float64(arbolRN.getAltPromedio(root, 1)) / float64(arbolRN.totalNodos)
+}
+
+func (arbolRN *RBTree) getComparacionesPromedio(root *RBNode) float64 {
+	return float64(arbolRN.getCompPromedio(root, 1)) / float64(arbolRN.totalNodos)
 }
 
 func (arbolRN *RBTree) busquedaRN(value int) (int, bool) {
@@ -288,10 +303,9 @@ func (arbolRN *RBTree) busquedaRN(value int) (int, bool) {
 	arbolRN.busqueda(arbolRN.root, value)
 
 	return arbolRN.comparaciones, arbolRN.encontrado
-
 }
 
-func (arbolRN *RBTree) insercion(array [8]int) {
+func (arbolRN *RBTree) insercion(array [9]int) {
 	arbolRN.cantComparaciones = 0
 	arbolRN.totalComparaciones = 0
 	arbolRN.totalNodos = 0
@@ -300,7 +314,6 @@ func (arbolRN *RBTree) insercion(array [8]int) {
 		fmt.Println(array[i])
 		arbolRN.addValue(array[i])
 	}
-
 }
 
 func (arbolRN *RBTree) busquedas(array [8]int) {
@@ -312,7 +325,7 @@ func (arbolRN *RBTree) busquedas(array [8]int) {
 }
 
 func (arbolRN *RBTree) getDensidad() float64 {
-	a := float64(arbolRN.totalNodos) / float64(arbolRN.getAltura(arbolRN.root))
+	a := float64(arbolRN.totalNodos) / float64(arbolRN.getAlturaMaxima(arbolRN.root))
 	return a
 }
 
@@ -326,17 +339,16 @@ func main() {
 		tamanio: 0,
 	}
 
-	array := [8]int{10, 52, 6, 60, 70, 80, 65, 60}
+	array := [9]int{10, 52, 6, 60, 70, 80, 65, 10}
 
 	arbolRN.insercion(array)
-
 	arbolRN.printTree(arbolRN.root)
 
-	//	fmt.Println(arbolRN.busquedaRN(90))
+	//fmt.Println(arbolRN.busquedaRN(90))
 	fmt.Println(arbolRN.totalNodos)
-	fmt.Println(arbolRN.getAlturaMaxima())
-	fmt.Println(arbolRN.getAltura(arbolRN.root))
-
+	//fmt.Println(arbolRN.getAlturaMaxima(arbolRN.root))
+	fmt.Println(arbolRN.getAlturaPromedio(arbolRN.root))
+	fmt.Println(arbolRN.getComparacionesPromedio(arbolRN.root))
 	fmt.Println(arbolRN.getDensidad())
 	//arbolRN.busquedas(array)
 
