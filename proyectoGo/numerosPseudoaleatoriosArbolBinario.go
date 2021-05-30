@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math"
 )
+
 //Globales
 var suma int
 var listaNodos []Nodo
@@ -13,13 +14,13 @@ var listaNodos []Nodo
 //Nodo
 
 type Nodo struct {
-	clave             int
-	cantidadRepetidas int
-	comparacionesObt  int
-	comparacionesInser  int
-	hijoIzquierdo     *Nodo
-	hijoDerecho       *Nodo
-	padre             *Nodo
+	clave              int
+	cantidadRepetidas  int
+	comparacionesObt   int
+	comparacionesInser int
+	hijoIzquierdo      *Nodo
+	hijoDerecho        *Nodo
+	padre              *Nodo
 }
 
 func (nod *Nodo) sumarRepetidas() {
@@ -30,7 +31,7 @@ func (nod *Nodo) comparacionesCantidad(comp int) {
 	nod.comparacionesObt = comp
 }
 
-func (nod *Nodo) sumarCompInser(comparaciones int){
+func (nod *Nodo) sumarCompInser(comparaciones int) {
 	nod.comparacionesInser = comparaciones
 }
 
@@ -49,22 +50,22 @@ func (arbol *arbolBinarioBusqueda) longitudArbol() int {
 	return arbol.tamanno
 }
 
-func (arbol *arbolBinarioBusqueda) alturaMax() int{
-	return arbol.tamanno -1
+func (arbol *arbolBinarioBusqueda) alturaMax() int {
+	return arbol.tamanno - 1
 }
 
 func (arbol *arbolBinarioBusqueda) alturaPromedio() float64 { //cambiar, nada que ver
 	return 2 * math.Sqrt(math.Pi*float64(arbol.tamanno))
 }
 
-func (arbol *arbolBinarioBusqueda) densidad() float64{
-	div := float64(arbol.longitudArbol())/float64(alturaSubArbol(arbol.raiz))
+func (arbol *arbolBinarioBusqueda) densidad() float64 {
+	div := float64(arbol.longitudArbol()) / float64(alturaSubArbol(arbol.raiz))
 	return div
 }
 
-func (arbol *arbolBinarioBusqueda)totalComparaciones() int{
+func (arbol *arbolBinarioBusqueda) totalComparaciones() int {
 	sumaComparaciones := 0
-	for i, s:= range cantidadTotalComparaciones(arbol.raiz, 0){
+	for i, s := range cantidadTotalComparaciones(arbol.raiz, 0) {
 		i = i
 		sumaComparaciones = sumaComparaciones + s.comparacionesInser
 	}
@@ -72,7 +73,7 @@ func (arbol *arbolBinarioBusqueda)totalComparaciones() int{
 	return sumaComparaciones
 }
 
-func (arbol *arbolBinarioBusqueda) cantidadPromedioComparaciones() float64{
+func (arbol *arbolBinarioBusqueda) cantidadPromedioComparaciones() float64 {
 	return float64(recorridoAmplitud(arbol.raiz)) / float64(arbol.longitudArbol())
 }
 
@@ -116,11 +117,10 @@ func (arbol *arbolBinarioBusqueda) agregarNodoArbol(llave int) int {
 	return nod.comparacionesInser
 }
 
-
 func (arbol *arbolBinarioBusqueda) obtenerP(llave int, nodoActual *Nodo, comparaciones int) *Nodo {
 	if nodoActual == nil {
 		nod := Nodo{clave: -1,
-			comparacionesObt: comparaciones +1}
+			comparacionesObt: comparaciones + 1}
 		return &nod
 	} else if nodoActual.clave == llave {
 		comparaciones = comparaciones + 1
@@ -141,7 +141,7 @@ func (arbol *arbolBinarioBusqueda) buscarLLave(llave int) *list.List {
 	nod := arbol.obtener(llave)
 	l := list.New()
 
-	if nod.clave != -1{
+	if nod.clave != -1 {
 		l.PushFront(true)
 	} else {
 		l.PushFront(false)
@@ -150,7 +150,7 @@ func (arbol *arbolBinarioBusqueda) buscarLLave(llave int) *list.List {
 	return l
 }
 
-func cantidadTotalComparaciones(nodoAct *Nodo, compar int) []Nodo{
+func cantidadTotalComparaciones(nodoAct *Nodo, compar int) []Nodo {
 	if nodoAct != nil {
 		cantidadTotalComparaciones(nodoAct.hijoIzquierdo, compar)
 		listaNodos = append(listaNodos, *nodoAct)
@@ -158,7 +158,6 @@ func cantidadTotalComparaciones(nodoAct *Nodo, compar int) []Nodo{
 	}
 	return listaNodos
 }
-
 
 //Recorridos
 
@@ -170,20 +169,20 @@ func inOrden(nodoAct *Nodo) {
 	}
 }
 
-func postOrden(nodoAct *Nodo){
-	if nodoAct != nil{
+func postOrden(nodoAct *Nodo) {
+	if nodoAct != nil {
 		postOrden(nodoAct.hijoIzquierdo)
 		postOrden(nodoAct.hijoDerecho)
 		fmt.Println(nodoAct.clave, " ", nodoAct.cantidadRepetidas)
 	}
 }
 
-func recorridoAmplitud(raiz *Nodo) int{
+func recorridoAmplitud(raiz *Nodo) int {
 	alt := alturaSubArbol(raiz)
 
 	//sumaComparacionesNivel := 0
 
-	for i:=1; i<=alt; i++ {
+	for i := 1; i <= alt; i++ {
 		verNivel(raiz, i, i)
 	}
 	return suma
@@ -193,7 +192,7 @@ func verNivel(raiz *Nodo, nivel int, nivelAct int) {
 
 	if raiz == nil {
 		return
-	}else{
+	} else {
 
 		if nivel == 1 {
 			mult := nivelAct * raiz.comparacionesInser
@@ -207,21 +206,20 @@ func verNivel(raiz *Nodo, nivel int, nivelAct int) {
 
 }
 
-func alturaSubArbol(nod *Nodo) int{ //con solo esta me devuelve la altura del árbol
-	if nod == nil{
+func alturaSubArbol(nod *Nodo) int { //con solo esta me devuelve la altura del árbol
+	if nod == nil {
 		return 0
 	} else {
 		alturaIzqu := alturaSubArbol(nod.hijoIzquierdo)
 		alturaDer := alturaSubArbol(nod.hijoDerecho)
 
-		if alturaIzqu > alturaDer{
+		if alturaIzqu > alturaDer {
 			return alturaIzqu + 1
-		} else{
+		} else {
 			return alturaDer + 1
 		}
 	}
 }
-
 
 //Números aleatorios
 
@@ -262,16 +260,19 @@ func generarNumeros(semilla int, cantidad int) []int {
 
 func main() {
 	//números
-	//var lista200 []int
+	var lista200 []int
 	//var listaBusqueda []int
 
-	//lista200 = generarNumeros(13, 200)
+	lista200 = generarNumeros(13, 200)
 	//listaBusqueda = generarNumeros(53, 10000)
 
-
-	arbBinarioBus := arbolBinarioBusqueda{
+	/*arbBinarioBus := arbolBinarioBusqueda{
 		raiz:    nil,
 		tamanno: 0,
+	}*/
+
+	for i := 0; i < 200; i++ {
+		fmt.Println(lista200[i])
 	}
 
 	//fmt.Println("Agregar nodos al árbol\n")
@@ -289,7 +290,7 @@ func main() {
 	//	fmt.Println(nodo.Front().Value, " ", nodo.Back().Value)
 	//}
 
-	fmt.Println("Agregar nodos al árbol\n")
+	/*fmt.Println("Agregar nodos al árbol\n")
 
 	fmt.Println(10, " ", arbBinarioBus.agregarNodoArbol(10))
 	fmt.Println(5, arbBinarioBus.agregarNodoArbol(5))
@@ -298,7 +299,7 @@ func main() {
 	fmt.Println(2, arbBinarioBus.agregarNodoArbol(2))
 	fmt.Println(2, arbBinarioBus.agregarNodoArbol(2))
 	fmt.Println(7, " ", arbBinarioBus.agregarNodoArbol(7))
-	fmt.Println(32, " ",arbBinarioBus.agregarNodoArbol(32))
+	fmt.Println(32, " ", arbBinarioBus.agregarNodoArbol(32))
 	fmt.Println(332, " ", arbBinarioBus.agregarNodoArbol(332))
 	fmt.Println(95, " ", arbBinarioBus.agregarNodoArbol(95))
 
@@ -310,8 +311,8 @@ func main() {
 	lis = append(lis, 15)
 	lis = append(lis, 3)
 
-	for i, s:= range lis{
-		i=i
+	for i, s := range lis {
+		i = i
 		l := arbBinarioBus.buscarLLave(s)
 		fmt.Println(l.Front().Value, " ", l.Back().Value)
 	}
@@ -320,19 +321,6 @@ func main() {
 
 	fmt.Println("\nDensidad árbol: ", arbBinarioBus.densidad())
 
-	fmt.Println("\nCantidad total de comparaciones: ", arbBinarioBus.totalComparaciones())
-
-
-
-
-
-
-
-
-
-
-
-
-
+	fmt.Println("\nCantidad total de comparaciones: ", arbBinarioBus.totalComparaciones())*/
 
 }
