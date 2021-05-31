@@ -158,6 +158,19 @@ func (arbol *arbolBinarioBusqueda) buscarLLave(llave int) [2]int {
 
 //Recorridos
 
+func (arbol *arbolBinarioBusqueda) preOrden(root *Nodo) {
+
+	fmt.Println(fmt.Sprint("Valor ", root.clave))
+	if root.hijoIzquierdo != nil {
+		fmt.Println("<<Izquierda")
+		arbol.preOrden(root.hijoIzquierdo)
+	}
+	if root.hijoDerecho != nil {
+		fmt.Println("Derecha>>")
+		arbol.preOrden(root.hijoDerecho)
+	}
+}
+
 func inOrden(nodoAct *Nodo) {
 	if nodoAct != nil {
 		inOrden(nodoAct.hijoIzquierdo)
@@ -291,17 +304,27 @@ func (nod *Nodo) RotIzq() *Nodo { // rotar a la izquierda
 	nod = headNode
 	return nod
 }
+
 func (nod *Nodo) Rotnodo() *Nodo {
+	//println("Clave: ", nod.clave)
 	if nod.hijoDerecho == nil {
+		//println("Entra al primer if")
 		return nod
 	}
+
 	if nod.contadorQC {
+		//println("Entra al segundo if")
 		nod.contadorQC = false
 		nod = nod.RotIzq()
 	}
-	nod.hijoDerecho = nod.hijoDerecho.Rotnodo()
+
+	//println(nod.hijoIzquierdo.clave)
+	if nod.hijoDerecho != nil {
+		nod.hijoDerecho = nod.hijoDerecho.Rotnodo()
+	}
 	return nod
 }
+
 func (arbol *arbolBinarioBusqueda) calculoNiveles(tamano int) int {
 	variable := int((math.Pow(float64(2), float64(tamano))))
 	if variable > arbol.longitudArbol() {
@@ -309,6 +332,7 @@ func (arbol *arbolBinarioBusqueda) calculoNiveles(tamano int) int {
 	}
 	return arbol.calculoNiveles(tamano + 1)
 }
+
 func (arbol *arbolBinarioBusqueda) calculosobrantes(tamano int) int {
 	variable := int((math.Pow(float64(2), float64(tamano))))
 	if variable-1 > arbol.longitudArbol() {
@@ -330,18 +354,29 @@ func (nod *Nodo) contarDer() int {
 	return 1 + nod.hijoDerecho.contarDer()
 }
 func (arbol *arbolBinarioBusqueda) dsw() {
+	//println("Aun no se cae1")
 	dsw := new(arbolBinarioBusqueda)
 
 	dsw.creardsw(arbol.raiz)
+	//println("Aun no se cae2")
+
 	nodoaux := dsw.raiz
 	variable := dsw.calculosobrantes(0)
-	//println("finalizo1",variable)
+
+	//println("Aun no se cae3", variable)
+
 	for i := 0; i < variable; i++ {
 		nodoaux.contadorQC = true
 		nodoaux = nodoaux.hijoDerecho.hijoDerecho
 	}
-	//println("finalizo4")
+	//println("Aun no se cae4")
+
+	dsw.preOrden(dsw.raiz)
 	dsw.raiz = dsw.raiz.Rotnodo()
+	println("Recorrido dentro dsw")
+	dsw.preOrden(dsw.raiz)
+	println("Final del recorrido")
+
 	for j := 1; j < 2; j++ {
 		dswNodo := dsw.raiz
 		for i := 0; i < dsw.raiz.contarDer()/2; i++ {
@@ -359,13 +394,17 @@ func (arbol *arbolBinarioBusqueda) dsw() {
 			j--
 		}
 	}
-	//println("end bro")
+
+	arbol.raiz = dsw.raiz
+	//println("Recorrido dentro dsw")
+	//arbol.preOrden(arbol.raiz)
+	//println("Final del recorrido")
 }
 
 func main() {
 	//números
 	//var listaInsertar []int
-	prueba := []int{1, 2, 8, 5, 63, 101}
+	prueba := []int{1, 2, 8, 5, 63, 101, 102, 150, 140, 130}
 	//var listaBusqueda []int
 
 	//listaInsertar = generarNumeros(13, 1000)
@@ -376,6 +415,8 @@ func main() {
 	fmt.Println(arbol.llenarArbol(prueba))
 	fmt.Println(alturaArbol(arbol.raiz))
 	arbol.dsw()
+	println("Recorrido")
+	arbol.preOrden(arbol.raiz)
 	//fmt.Println(alturaArbol(arbol.raiz))
 
 	//fmt.Println(arbol.llenarArbol(listaInsertar))

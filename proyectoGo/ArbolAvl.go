@@ -1,7 +1,7 @@
 package main
 
 import (
-//	"container/list"
+	//	"container/list"
 	"fmt"
 )
 
@@ -11,21 +11,19 @@ var totalInsercionesAVL int
 var totalBusquAVL int
 
 type nodoAvl struct {
-	valor	int
-	cantidadRepetidas  int
-	CantComparaciones	int
-	nIzq	*nodoAvl
-	nDer	*nodoAvl
-	padre	*nodoAvl
-	peso int
-	Hh bool
-
+	valor             int
+	cantidadRepetidas int
+	CantComparaciones int
+	nIzq              *nodoAvl
+	nDer              *nodoAvl
+	padre             *nodoAvl
+	peso              int
+	Hh                bool
 }
 
 type arbolAvl struct {
 	raiz    *nodoAvl
 	tamanio int
-
 }
 
 func (arbol *arbolAvl) llenarArbolAvl(listaNums []int) int {
@@ -42,7 +40,6 @@ func (arbol *arbolAvl) llenarArbolAvl(listaNums []int) int {
 	return totalComparaciones
 
 }
-
 
 func (arbol *arbolAvl) buscarValorAvl(lista []int) int {
 	totalComp := 0
@@ -62,18 +59,15 @@ func (arbol *arbolAvl) buscarValorAvl(lista []int) int {
 	return totalComp
 }
 
-
 func (arbol *arbolAvl) alturaPromedio() float64 {
 	recorridoAmplitudAvl(arbol.raiz)
 	div := float64(sumatoriaNivelesavl) / float64(arbol.longitudArbol())
 	return div
 }
 
-
 func (arbol *arbolAvl) totalComparaciones() int {
 	return totalBusquAVL + totalInsercionesAVL
 }
-
 
 func (arbol *arbolAvl) cantidadPromedioComparaciones() float64 {
 	comparacionesPromedioavl = 0
@@ -105,7 +99,6 @@ func verNivelAvl(raiz *nodoAvl, nivel int, nivelAct int, cantNodos int) {
 
 }
 
-
 func (arbol *arbolAvl) densidad() float64 {
 	div := float64(arbol.longitudArbol()) / float64(alturaArbolAvl(arbol.raiz))
 	return div
@@ -126,7 +119,6 @@ func alturaArbolAvl(nod *nodoAvl) int { //con solo esta me devuelve la altura de
 	}
 }
 
-
 func (arbol *arbolAvl) agregarTamanio() {
 	arbol.tamanio += 1
 }
@@ -134,49 +126,49 @@ func (arbol *arbolAvl) agregarTamanio() {
 func (arbol *arbolAvl) longitudArbol() int {
 	return arbol.tamanio
 }
-func  (nodoActual *nodoAvl) reparapesos(pValor int,nod *nodoAvl) {
+func (nodoActual *nodoAvl) reparapesos(pValor int, nod *nodoAvl) {
 
 	if pValor < nod.valor {
-		nod.peso=nod.peso+1
-		nodoActual.reparapesos(pValor,nod.nIzq)
-	}else{
+		nod.peso = nod.peso + 1
+		nodoActual.reparapesos(pValor, nod.nIzq)
+	} else {
 		if pValor > nod.valor {
-			nod.peso=nod.peso-1
-			nodoActual.reparapesos(pValor,nod.nDer)
+			nod.peso = nod.peso - 1
+			nodoActual.reparapesos(pValor, nod.nDer)
 		}
 
 	}
 }
-func  (nodoActual *nodoAvl) InsertarAux(pValor int,nod *arbolAvl) {
-	nodoActual.Hh=false
+func (nodoActual *nodoAvl) InsertarAux(pValor int, nod *arbolAvl) {
+	nodoActual.Hh = false
 
 	if nodoActual == nil {
-		nodoActual = &nodoAvl{pValor,0,0,nil,nil,nil,0,false}
+		nodoActual = &nodoAvl{pValor, 0, 0, nil, nil, nil, 0, false}
 		return
 	}
 	if pValor < nodoActual.valor {
 		if nodoActual.nIzq == nil {
-			nodoActual.nIzq = &nodoAvl{pValor,0,0,nil,nil,nil,0,false}
-			nodoActual.peso=nodoActual.peso-1
-		}else{
-			nodoActual.nIzq.InsertarAux(pValor,nod)
-			nodoActual.peso=nodoActual.peso-1
+			nodoActual.nIzq = &nodoAvl{pValor, 0, 0, nil, nil, nil, 0, false}
+			nodoActual.peso = nodoActual.peso - 1
+		} else {
+			nodoActual.nIzq.InsertarAux(pValor, nod)
+			nodoActual.peso = nodoActual.peso - 1
 
 		}
 		nodoActual.nIzq = nodoActual.nIzq.adjust()
-		if nodoActual.nIzq.Hh{
-			nodoActual.nIzq.Hh=false
-			nodoActual.Hh=true
-			nodoActual.peso=nodoActual.nDer.alturaArbolAux(0)-nodoActual.nIzq.alturaArbolAux(0)
+		if nodoActual.nIzq.Hh {
+			nodoActual.nIzq.Hh = false
+			nodoActual.Hh = true
+			nodoActual.peso = nodoActual.nDer.alturaArbolAux(0) - nodoActual.nIzq.alturaArbolAux(0)
 		}
 		return
-	}else {
-		if pValor > nodoActual.valor{
+	} else {
+		if pValor > nodoActual.valor {
 			if nodoActual.nDer == nil {
 				nodoActual.nDer = &nodoAvl{pValor, 0, 0, nil, nil, nil, 0, false}
 				nodoActual.peso = nodoActual.peso + 1
 			} else {
-				nodoActual.nDer.InsertarAux(pValor,nod)
+				nodoActual.nDer.InsertarAux(pValor, nod)
 				nodoActual.peso = nodoActual.peso + 1
 			}
 			nodoActual.nDer = nodoActual.nDer.adjust()
@@ -185,32 +177,30 @@ func  (nodoActual *nodoAvl) InsertarAux(pValor int,nod *arbolAvl) {
 				nodoActual.Hh = true
 				nodoActual.peso = nodoActual.nDer.alturaArbolAux(0) - nodoActual.nIzq.alturaArbolAux(0)
 			}
-		}else{
-			fmt.Printf( "ponga aqui la repeticion")
-			nodoActual.reparapesos(pValor,nod.raiz)
+		} else {
+			fmt.Printf("ponga aqui la repeticion")
+			nodoActual.reparapesos(pValor, nod.raiz)
 		}
 	}
 
-
 }
 
-
-func (nod *arbolAvl) Insertar(pValor int)  {
+func (nod *arbolAvl) Insertar(pValor int) {
 	if nod.raiz == nil {
-		nod.raiz =&nodoAvl{pValor,0,0,nil,nil,nil,0,false}
+		nod.raiz = &nodoAvl{pValor, 0, 0, nil, nil, nil, 0, false}
 		nod.sumarTamano()
 		return
 	}
-	nod.raiz.InsertarAux(pValor,nod)
-	nod.raiz=nod.raiz.adjust()
-	if nod.raiz.nDer!=nil {
+	nod.raiz.InsertarAux(pValor, nod)
+	nod.raiz = nod.raiz.adjust()
+	if nod.raiz.nDer != nil {
 		if nod.raiz.nDer.Hh {
 			nod.raiz.nDer.Hh = false
 			nod.raiz.Hh = true
 			nod.raiz.peso = nod.raiz.nDer.alturaArbolAux(0) - nod.raiz.nIzq.alturaArbolAux(0)
 		}
 	}
-	if nod.raiz.nIzq!=nil {
+	if nod.raiz.nIzq != nil {
 		if nod.raiz.nIzq.Hh {
 			nod.raiz.nIzq.Hh = false
 			nod.raiz.Hh = true
@@ -221,115 +211,109 @@ func (nod *arbolAvl) Insertar(pValor int)  {
 	//fmt.Println(nod.alturaArbol())
 }
 func (nod *arbolAvl) Busqueda(pNodo int) bool {
-	return nod.BusquedaAux(pNodo,nod.raiz)
+	return nod.BusquedaAux(pNodo, nod.raiz)
 }
-func (nod *arbolAvl) BusquedaAux(pNodo int,nodoActual *nodoAvl) bool {
+func (nod *arbolAvl) BusquedaAux(pNodo int, nodoActual *nodoAvl) bool {
 	if nodoActual == nil {
 		return false
 	}
 	compare := pNodo - nodoActual.valor
 	if compare < 0 {
-		return nod.BusquedaAux(pNodo,nodoActual.nIzq)
-	}else if compare > 0 {
-		return nod.BusquedaAux(pNodo,nodoActual.nDer)
-	}else {
+		return nod.BusquedaAux(pNodo, nodoActual.nIzq)
+	} else if compare > 0 {
+		return nod.BusquedaAux(pNodo, nodoActual.nDer)
+	} else {
 		return true
 	}
 }
 
-
-func (nod * nodoAvl ) RotIzq () * nodoAvl  {// rotar a la izquierda
+func (nod *nodoAvl) RotIzq() *nodoAvl { // rotar a la izquierda
 	headNode := nod.nDer
 	nod.nDer = headNode.nIzq
 	headNode.nIzq = nod
-	if headNode.nDer!= nil {
+	if headNode.nDer != nil {
 		headNode.nDer.peso = headNode.nDer.nDer.alturaArbolAux(0) - headNode.nDer.nIzq.alturaArbolAux(0)
 	}
-	if headNode.nIzq!= nil{
-		headNode.nIzq.peso=headNode.nIzq.nDer.alturaArbolAux(0)-headNode.nIzq.nIzq.alturaArbolAux(0)
+	if headNode.nIzq != nil {
+		headNode.nIzq.peso = headNode.nIzq.nDer.alturaArbolAux(0) - headNode.nIzq.nIzq.alturaArbolAux(0)
 	}
-	headNode.peso=headNode.nDer.alturaArbolAux(0)-headNode.nIzq.alturaArbolAux(0)
+	headNode.peso = headNode.nDer.alturaArbolAux(0) - headNode.nIzq.alturaArbolAux(0)
 	return headNode
 }
 
-
-func (nod * nodoAvl ) RotDer () * nodoAvl  {// rotar a la derecha
+func (nod *nodoAvl) RotDer() *nodoAvl { // rotar a la derecha
 	headNode := nod.nIzq
 	nod.nIzq = headNode.nDer
 	headNode.nDer = nod
-	if headNode.nIzq!= nil{
-		headNode.nIzq.peso=headNode.nIzq.nIzq.alturaArbolAux(0)-headNode.nIzq.nDer.alturaArbolAux(0)
+	if headNode.nIzq != nil {
+		headNode.nIzq.peso = headNode.nIzq.nIzq.alturaArbolAux(0) - headNode.nIzq.nDer.alturaArbolAux(0)
 	}
-	if headNode.nDer!= nil{
-		headNode.nDer.peso=headNode.nDer.nIzq.alturaArbolAux(0)-headNode.nDer.nDer.alturaArbolAux(0)
+	if headNode.nDer != nil {
+		headNode.nDer.peso = headNode.nDer.nIzq.alturaArbolAux(0) - headNode.nDer.nDer.alturaArbolAux(0)
 	}
 
 	return headNode
 }
-func (nod *nodoAvl ) adjusttodo() {
+func (nod *nodoAvl) adjusttodo() {
 	if nod == nil {
 		return
 	}
 	nod.nIzq.adjusttodo()
 	nod.nDer.adjusttodo()
-	if nod!= nil{
+	if nod != nil {
 		//fmt.Println(nod.valor,nod.peso,"uno")
-		nod.peso=nod.nDer.alturaArbolAux(0)-nod.nIzq.alturaArbolAux(0)
+		nod.peso = nod.nDer.alturaArbolAux(0) - nod.nIzq.alturaArbolAux(0)
 		//fmt.Println(nod.valor,nod.peso,"dos")
 
 	}
 
 }
-func (nod *nodoAvl ) adjust() *nodoAvl  {
-	if nod.peso== 2 {
-		if nod.nDer.peso > 0{
+func (nod *nodoAvl) adjust() *nodoAvl {
+	if nod.peso == 2 {
+		if nod.nDer.peso > 0 {
 			nod = nod.RotIzq()
-		}else {
+		} else {
 			nod = nod.rightThenLeftRotate()
 		}
-		nod.Hh=true
-	}else if nod.peso== -2 {
-		if nod.nIzq.peso<0 {
+		nod.Hh = true
+	} else if nod.peso == -2 {
+		if nod.nIzq.peso < 0 {
 			nod = nod.RotDer()
 		} else {
 			nod = nod.LeftThenRightRotate()
 		}
-		nod.Hh=true
+		nod.Hh = true
 	}
 	return nod
 }
 
 func (arbol *arbolAvl) sumarTamano() {
-		arbol.tamanio += 1
-	}
-
-
-
-
-func (nod *nodoAvl ) getAll() []int {
-	valores  := []int{}
-	return addValues(valores,nod)
+	arbol.tamanio += 1
 }
 
-func addValues(valores []int,nod *nodoAvl ) []int {
-	if nod != nil {
-		valores = addValues(valores,nod.nIzq)
-		valores = append(valores,nod.valor)
+func (nod *nodoAvl) getAll() []int {
+	valores := []int{}
+	return addValues(valores, nod)
+}
 
-		valores = addValues(valores,nod.nDer)
+func addValues(valores []int, nod *nodoAvl) []int {
+	if nod != nil {
+		valores = addValues(valores, nod.nIzq)
+		valores = append(valores, nod.valor)
+
+		valores = addValues(valores, nod.nDer)
 	}
 	return valores
 }
 
-
-func (nod *nodoAvl ) getAltura() int {
+func (nod *nodoAvl) getAltura() int {
 	if nod == nil {
 		return 0
 	}
 	return 0 /////////////////////////////////////////////////////////////////////////////////////////
 }
 
-func maximo(a int,b int) int {
+func maximo(a int, b int) int {
 	if a > b {
 		return a
 	} else {
@@ -338,37 +322,37 @@ func maximo(a int,b int) int {
 	}
 }
 
-func (nod * nodoAvl ) rightThenLeftRotate () * nodoAvl  {
+func (nod *nodoAvl) rightThenLeftRotate() *nodoAvl {
 
 	sonHeadNode := nod.nDer.RotDer()
 	nod.nDer = sonHeadNode
 	return nod.RotIzq()
 }
 
-func (nod * nodoAvl ) LeftThenRightRotate () * nodoAvl  {
+func (nod *nodoAvl) LeftThenRightRotate() *nodoAvl {
 
 	sonHeadNode := nod.nIzq.RotIzq()
-	nod.nIzq= sonHeadNode
+	nod.nIzq = sonHeadNode
 	return nod.RotDer()
 }
-func (nod * nodoAvl )postOrden(){
-	if nod != nil{
+func (nod *nodoAvl) postOrden() {
+	if nod != nil {
 		nod.nIzq.postOrden()
 		fmt.Println(nod.valor)
 		nod.nDer.postOrden()
 	}
 }
-func (nod * nodoAvl )Orden(){
-	if nod != nil{
-		fmt.Println(nod.valor,nod.peso)
+func (nod *nodoAvl) Orden() {
+	if nod != nil {
+		fmt.Println(nod.valor, nod.peso)
 		nod.nIzq.Orden()
 
 		nod.nDer.Orden()
 	}
 }
-func (nod *nodoAvl) alturaArbolAux( max int) int{
-	if nod != nil{
-		return 1+maximo(nod.nDer.alturaArbolAux(max),nod.nIzq.alturaArbolAux(max))
+func (nod *nodoAvl) alturaArbolAux(max int) int {
+	if nod != nil {
+		return 1 + maximo(nod.nDer.alturaArbolAux(max), nod.nIzq.alturaArbolAux(max))
 	}
 	return 0
 
@@ -378,30 +362,32 @@ func (arbol *arbolAvl) alturaArbol() int {
 
 }
 
-func (nod *nodoAvl) BuscarAux(valor int,cont int) [2]int {
+func (nod *nodoAvl) BuscarAux(valor int, cont int) [2]int {
 	var l [2]int
-	if(nod==nil){
-		l[0]=0
-		l[1]=cont+1
+	if nod == nil {
+		l[0] = 0
+		l[1] = cont + 1
 		return l
 	}
-	if(nod.valor<valor){
-		nod.nDer.BuscarAux(valor,cont+1)
-	}else{
-		if(nod.valor>valor){
-			nod.nIzq.BuscarAux(valor,cont+1)
-		}else{
-			l[0]=1
-			l[1]=cont+1
+	if nod.valor < valor {
+		nod.nDer.BuscarAux(valor, cont+1)
+	} else {
+		if nod.valor > valor {
+			nod.nIzq.BuscarAux(valor, cont+1)
+		} else {
+			l[0] = 1
+			l[1] = cont + 1
 
 		}
 	}
 	return l
 }
 func (arbol *arbolAvl) Buscar(valor int) [2]int {
-	return arbol.raiz.BuscarAux(valor,0)
+	return arbol.raiz.BuscarAux(valor, 0)
 
 }
+
+/*
 func main() {
 	arbol := arbolAvl{
 		raiz: nil,
@@ -481,4 +467,4 @@ func main() {
 	//lis = arbol.buscarLLave(5)
 	//fmt.Println("Se encotró: ", lis.Front().Value)
 	//fmt.Println("Cant de comparacionesObt: ", lis.Back().Value)
-}
+}*/

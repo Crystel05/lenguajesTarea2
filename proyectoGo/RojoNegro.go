@@ -329,6 +329,7 @@ func (arbolRN *RBTree) getDensidad() float64 {
 	return a
 }
 
+/*
 func main() {
 
 	var node *RBNode
@@ -352,4 +353,4 @@ func main() {
 	fmt.Println(arbolRN.getDensidad())
 	//arbolRN.busquedas(array)
 
-}
+}*/
