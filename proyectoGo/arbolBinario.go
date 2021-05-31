@@ -12,6 +12,7 @@ package main
 //	hijoIzquierdo     *Nodo
 //	hijoDerecho       *Nodo
 //	padre             *Nodo
+//	contadorQC int
 //}
 //
 //func (nod *Nodo) sumarRepetidas() {
