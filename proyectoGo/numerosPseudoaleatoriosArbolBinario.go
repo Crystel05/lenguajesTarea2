@@ -48,7 +48,7 @@ func (arbol *arbolBinarioBusqueda) longitudArbol() int {
 	return arbol.tamanno
 }
 
-func alturaArbol(nod *Nodo) int { //con solo esta me devuelve la altura del árbol
+func alturaArbol(nod *Nodo) int {
 	if nod == nil {
 		return 0
 	} else {
@@ -212,7 +212,6 @@ func (arbol *arbolBinarioBusqueda) llenarArbol(listaNums []int) int {
 
 	for i := 0; i < len(listaNums); i++ {
 		comps := arbol.agregarNodoArbol(listaNums[i])
-		//fmt.Println(comps)
 		totalComparaciones = totalComparaciones + comps
 	}
 	totalInsercionesBin = totalComparaciones
@@ -226,11 +225,11 @@ func (arbol *arbolBinarioBusqueda) buscarLlaves(lista []int) int {
 	for i := 0; i < len(lista); i++ {
 		var lis [2]int
 		lis = arbol.buscarLLave(lista[i])
-		//if lis[0] == 0{
-		//	fmt.Println("No encontrada ", lis[1])
-		//} else {
-		//	fmt.Println("Encontrada ", lis[1])
-		//}
+		if lis[0] == 0{
+			fmt.Println("No encontrada ", lis[1])
+		} else {
+			fmt.Println("Encontrada ", lis[1])
+		}
 
 		totalComp = totalComp + lis[1]
 	}
@@ -274,12 +273,12 @@ func generarNumeros(semilla int, cantidad int) []int {
 
 	return numeros
 }
+
 func (arbol *arbolBinarioBusqueda)creardsw( nodo *Nodo)  {
+
 	if(nodo==nil){
 		return
-
 	}
-
 	arbol.creardsw(nodo.hijoIzquierdo)
 	arbol.insertar(nodo.clave)
 	arbol.creardsw(nodo.hijoDerecho)
@@ -319,7 +318,7 @@ func (arbol *arbolBinarioBusqueda)calculosobrantes(tamano int) int  {
 	if(variable-1>arbol.longitudArbol()){
 		return arbol.longitudArbol()-int((math.Pow(float64(2),float64(tamano-1)))-1)
 	}
-	println(variable,tamano)
+	//println(variable,tamano)
 	return arbol.calculosobrantes(tamano+1)
 }
 func (nod * Nodo)contarIzq()  int{
@@ -340,17 +339,17 @@ func (arbol *arbolBinarioBusqueda)dsw()  {
 	dsw.creardsw(arbol.raiz)
 	nodoaux:=dsw.raiz
 	variable:=dsw.calculosobrantes(0)
-	println("finalizo1",variable)
+	//println("finalizo1",variable)
 	for i := 0; i < variable; i++ {
 		nodoaux.contadorQC=true
 		nodoaux=nodoaux.hijoDerecho.hijoDerecho
 	}
-	println("finalizo4")
+	//println("finalizo4")
 	dsw.raiz=dsw.raiz.Rotnodo()
 	for j := 1; j < 2; j++{
 		dswNodo := dsw.raiz
 		for i := 0; i < dsw.raiz.contarDer()/2; i++ {
-			println(dsw.raiz.contarDer()/2)
+		//	println(dsw.raiz.contarDer()/2)
 			dswNodo.contadorQC = true
 			if(dswNodo.hijoDerecho.hijoDerecho==nil){
 				dswNodo.contadorQC=false
@@ -358,40 +357,50 @@ func (arbol *arbolBinarioBusqueda)dsw()  {
 			dswNodo = dswNodo.hijoDerecho.hijoDerecho
 
 		}
-		println("finalizo4",j)
+		//println("finalizo4",j)
 		dsw.raiz=dsw.raiz.Rotnodo()
 		if(arbol.calculoNiveles(0)>dsw.raiz.contarIzq()){
 			j--
 		}
 	}
-	println("end bro")
+	//println("end bro")
 }
+
+
+
+
 
 func main() {
 	//números
-	//var lista200 []int
+	//var listaInsertar []int
+	prueba := []int{1,2,8,5,63,101}
 	//var listaBusqueda []int
-	//
-	//lista200 = generarNumeros(13, 200)
+
+	//listaInsertar = generarNumeros(13, 1000)
 	//listaBusqueda = generarNumeros(53, 10000)
-	//,3,68,567,245,5234,5,15,7,768,245,6,56,65,654,546,54
-	listaInsertar := []int{56, 41, 5, 3332, 4, 56, 7, 23, 5, 41, 56,3,68,567,245,5234,5,15,768,245,6,56,65,654,546,54}
-	listaBuscar := []int{33, 25, 23, 4, 89, 10, 7, 65, 332, 45, 3332}
 
 	arbol := new(arbolBinarioBusqueda)
 
-	fmt.Println(arbol.llenarArbol(listaInsertar))
-//
-	fmt.Println(arbol.buscarLlaves(listaBuscar))
-//
+	fmt.Println(arbol.llenarArbol(prueba))
 	fmt.Println(alturaArbol(arbol.raiz))
-//
-	fmt.Println(arbol.alturaPromedio())
-//
-	fmt.Println(arbol.totalComparaciones())
-//
-	fmt.Println(arbol.cantidadPromedioComparaciones())
-
-	fmt.Println(arbol.densidad())
 	arbol.dsw()
+	//fmt.Println(alturaArbol(arbol.raiz))
+
+	//fmt.Println(arbol.llenarArbol(listaInsertar))
+	//
+	//fmt.Println(arbol.buscarLlaves(listaBuscar))
+	//
+	//fmt.Println(alturaArbol(arbol.raiz))
+	//
+	//fmt.Println(arbol.alturaPromedio())
+	//
+	//fmt.Println(arbol.totalComparaciones())
+	//
+	//fmt.Println(arbol.cantidadPromedioComparaciones())
+	//
+	//fmt.Println(arbol.densidad())
+
+
+	//arbol.dsw()
+
 }

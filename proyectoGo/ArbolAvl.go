@@ -5,10 +5,10 @@ import (
 	"fmt"
 )
 
-var comparacionesPromedio int
-var sumatoriaNiveles int
-var totalInsercionesBin int
-var totalBusquBin int
+var comparacionesPromedioavl int
+var sumatoriaNivelesavl int
+var totalInsercionesAVL int
+var totalBusquAVL int
 
 type nodoAvl struct {
 	valor	int
@@ -30,14 +30,15 @@ type arbolAvl struct {
 
 func (arbol *arbolAvl) llenarArbolAvl(listaNums []int) int {
 	totalComparaciones := 0
-	totalInsercionesBin = 0
+	totalInsercionesAVL = 0
 
 	for i := 0; i < len(listaNums); i++ {
-		comps := arbol.Insertar(listaNums[i])
+		comps := i
+		arbol.Insertar(listaNums[i])
 		//fmt.Println(comps)
 		totalComparaciones = totalComparaciones + comps
 	}
-	totalInsercionesBin = totalComparaciones
+	totalInsercionesAVL = totalComparaciones
 	return totalComparaciones
 
 }
@@ -45,7 +46,7 @@ func (arbol *arbolAvl) llenarArbolAvl(listaNums []int) int {
 
 func (arbol *arbolAvl) buscarValorAvl(lista []int) int {
 	totalComp := 0
-	totalBusquBin = 0
+	totalBusquAVL = 0
 	for i := 0; i < len(lista); i++ {
 		var lis [2]int
 		lis = arbol.Buscar(lista[i])
@@ -57,27 +58,27 @@ func (arbol *arbolAvl) buscarValorAvl(lista []int) int {
 
 		totalComp = totalComp + lis[1]
 	}
-	totalBusquBin = totalComp
+	totalBusquAVL = totalComp
 	return totalComp
 }
 
 
 func (arbol *arbolAvl) alturaPromedio() float64 {
 	recorridoAmplitudAvl(arbol.raiz)
-	div := float64(sumatoriaNiveles) / float64(arbol.longitudArbol())
+	div := float64(sumatoriaNivelesavl) / float64(arbol.longitudArbol())
 	return div
 }
 
 
 func (arbol *arbolAvl) totalComparaciones() int {
-	return totalBusquBin + totalInsercionesBin
+	return totalBusquAVL + totalInsercionesAVL
 }
 
 
 func (arbol *arbolAvl) cantidadPromedioComparaciones() float64 {
-	comparacionesPromedio = 0
+	comparacionesPromedioavl = 0
 	recorridoAmplitudAvl(arbol.raiz)
-	return float64(comparacionesPromedio) / float64(arbol.longitudArbol())
+	return float64(comparacionesPromedioavl) / float64(arbol.longitudArbol())
 }
 func recorridoAmplitudAvl(raiz *nodoAvl) {
 	alt := alturaArbolAvl(raiz)
@@ -93,8 +94,8 @@ func verNivelAvl(raiz *nodoAvl, nivel int, nivelAct int, cantNodos int) {
 	} else {
 		if nivel == 1 {
 			mult := nivelAct * raiz.cantidadRepetidas
-			comparacionesPromedio = comparacionesPromedio + mult
-			sumatoriaNiveles = sumatoriaNiveles + nivelAct
+			comparacionesPromedioavl = comparacionesPromedioavl + mult
+			sumatoriaNivelesavl = sumatoriaNivelesavl + nivelAct
 			cantNodos += 1
 		} else if nivel > 1 {
 			verNivelAvl(raiz.nIzq, nivel-1, nivelAct, cantNodos)
