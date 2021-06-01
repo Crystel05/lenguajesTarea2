@@ -63,6 +63,8 @@ func alturaArbol(nod *Nodo) int {
 }
 
 func (arbol *arbolBinarioBusqueda) alturaPromedio() float64 {
+	sumatoriaNiveles = 0
+	comparacionesPromedio = 0
 	recorridoAmplitud(arbol.raiz)
 	div := float64(sumatoriaNiveles) / float64(arbol.longitudArbol())
 	return div
@@ -79,26 +81,35 @@ func (arbol *arbolBinarioBusqueda) totalComparaciones() int {
 
 func (arbol *arbolBinarioBusqueda) cantidadPromedioComparaciones() float64 {
 	comparacionesPromedio = 0
+	sumatoriaNiveles = 0
 	recorridoAmplitud(arbol.raiz)
 	return float64(comparacionesPromedio) / float64(arbol.longitudArbol())
 }
 
-func (arbol *arbolBinarioBusqueda) insertarP(llave int, nodoActual *Nodo) {
+func (arbol *arbolBinarioBusqueda) insertarP(llave int, nodoActual *Nodo, rep int) {
 	if llave < nodoActual.clave {
 		if nodoActual.hijoIzquierdo != nil {
-			arbol.insertarP(llave, nodoActual.hijoIzquierdo)
+			arbol.insertarP(llave, nodoActual.hijoIzquierdo, rep)
 		} else {
 			nodoActual.hijoIzquierdo = &Nodo{clave: llave, hijoIzquierdo: nil, hijoDerecho: nil, padre: nodoActual}
-			nodoActual.hijoIzquierdo.sumarRepetidas()
+			if rep != 0{
+				nodoActual.hijoIzquierdo.cantidadRepetidas = rep
+			}else {
+				nodoActual.hijoIzquierdo.sumarRepetidas()
+			}
 			arbol.agregarTamanno()
 		}
 
 	} else if llave > nodoActual.clave {
 		if nodoActual.hijoDerecho != nil {
-			arbol.insertarP(llave, nodoActual.hijoDerecho)
+			arbol.insertarP(llave, nodoActual.hijoDerecho, rep)
 		} else {
 			nodoActual.hijoDerecho = &Nodo{clave: llave, hijoIzquierdo: nil, hijoDerecho: nil, padre: nodoActual}
-			nodoActual.hijoDerecho.sumarRepetidas()
+			if rep != 0{
+				nodoActual.hijoDerecho.cantidadRepetidas = rep
+			}else {
+				nodoActual.hijoDerecho.sumarRepetidas()
+			}
 			arbol.agregarTamanno()
 		}
 	} else {
@@ -106,18 +117,23 @@ func (arbol *arbolBinarioBusqueda) insertarP(llave int, nodoActual *Nodo) {
 	}
 }
 
-func (arbol *arbolBinarioBusqueda) insertar(llave int) {
+func (arbol *arbolBinarioBusqueda) insertar(llave int, rep int) {
 	if arbol.raiz != nil {
-		arbol.insertarP(llave, arbol.raiz)
+		arbol.insertarP(llave, arbol.raiz, rep)
 	} else {
 		arbol.raiz = &Nodo{clave: llave, hijoIzquierdo: nil, hijoDerecho: nil, padre: nil}
-		arbol.raiz.sumarRepetidas()
+		if rep != 0{
+			arbol.raiz.cantidadRepetidas = rep
+		} else{
+			arbol.raiz.sumarRepetidas()
+		}
 		arbol.agregarTamanno()
+
 	}
 }
 
 func (arbol *arbolBinarioBusqueda) agregarNodoArbol(llave int) int {
-	arbol.insertar(llave)
+	arbol.insertar(llave, 0)
 	nod := arbol.obtener(llave)
 	return nod.comparacionesObt
 }
@@ -160,13 +176,13 @@ func (arbol *arbolBinarioBusqueda) buscarLLave(llave int) [2]int {
 
 func (arbol *arbolBinarioBusqueda) preOrden(root *Nodo) {
 
-	fmt.Println(fmt.Sprint("Valor ", root.clave))
+	//fmt.Println(fmt.Sprint("Valor ", root.clave))
 	if root.hijoIzquierdo != nil {
-		fmt.Println("<<Izquierda")
+		//fmt.Println("<<Izquierda")
 		arbol.preOrden(root.hijoIzquierdo)
 	}
 	if root.hijoDerecho != nil {
-		fmt.Println("Derecha>>")
+		//fmt.Println("Derecha>>")
 		arbol.preOrden(root.hijoDerecho)
 	}
 }
@@ -191,11 +207,11 @@ func recorridoAmplitud(raiz *Nodo) {
 	alt := alturaArbol(raiz)
 
 	for i := 1; i <= alt; i++ {
-		verNivel(raiz, i, i, 0)
+		verNivel(raiz, i, i)
 	}
 }
 
-func verNivel(raiz *Nodo, nivel int, nivelAct int, cantNodos int) {
+func verNivel(raiz *Nodo, nivel int, nivelAct int) {
 
 	if raiz == nil {
 		return
@@ -206,11 +222,10 @@ func verNivel(raiz *Nodo, nivel int, nivelAct int, cantNodos int) {
 			mult := nivelAct * raiz.cantidadRepetidas
 			comparacionesPromedio = comparacionesPromedio + mult
 			sumatoriaNiveles = sumatoriaNiveles + nivelAct
-			cantNodos += 1
 
 		} else if nivel > 1 {
-			verNivel(raiz.hijoIzquierdo, nivel-1, nivelAct, cantNodos)
-			verNivel(raiz.hijoDerecho, nivel-1, nivelAct, cantNodos)
+			verNivel(raiz.hijoIzquierdo, nivel-1, nivelAct)
+			verNivel(raiz.hijoDerecho, nivel-1, nivelAct)
 		}
 	}
 
@@ -291,7 +306,7 @@ func (arbol *arbolBinarioBusqueda) creardsw(nodo *Nodo) {
 		return
 	}
 	arbol.creardsw(nodo.hijoIzquierdo)
-	arbol.insertar(nodo.clave)
+	arbol.insertar(nodo.clave, nodo.cantidadRepetidas)
 	arbol.creardsw(nodo.hijoDerecho)
 	arbol.longitudArbol()
 
@@ -373,9 +388,9 @@ func (arbol *arbolBinarioBusqueda) dsw() {
 
 	dsw.preOrden(dsw.raiz)
 	dsw.raiz = dsw.raiz.Rotnodo()
-	println("Recorrido dentro dsw")
+	//println("Recorrido dentro dsw")
 	dsw.preOrden(dsw.raiz)
-	println("Final del recorrido")
+	//println("Final del recorrido")
 
 	for j := 1; j < 2; j++ {
 		dswNodo := dsw.raiz
@@ -403,36 +418,28 @@ func (arbol *arbolBinarioBusqueda) dsw() {
 
 func main() {
 	//números
-	//var listaInsertar []int
-	prueba := []int{1, 2, 8, 5, 63, 101, 102, 150, 140, 130}
-	//var listaBusqueda []int
+	var listaInsertar []int
+	var listaBusqueda []int
 
-	//listaInsertar = generarNumeros(13, 1000)
-	//listaBusqueda = generarNumeros(53, 10000)
+	listaInsertar = generarNumeros(43, 1000) //13 61 97 89 43
+	listaBusqueda = generarNumeros(101, 10000)
 
 	arbol := new(arbolBinarioBusqueda)
 
-	fmt.Println(arbol.llenarArbol(prueba))
-	fmt.Println(alturaArbol(arbol.raiz))
+	fmt.Println("Inserciones: ", arbol.llenarArbol(listaInsertar))
 	arbol.dsw()
-	println("Recorrido")
-	arbol.preOrden(arbol.raiz)
-	//fmt.Println(alturaArbol(arbol.raiz))
+	fmt.Println("Busquedas: ", arbol.buscarLlaves(listaBusqueda))
+	fmt.Println("total comparaciones: ", arbol.totalComparaciones())
 
-	//fmt.Println(arbol.llenarArbol(listaInsertar))
-	//
-	//fmt.Println(arbol.buscarLlaves(listaBuscar))
-	//
-	//fmt.Println(alturaArbol(arbol.raiz))
-	//
-	//fmt.Println(arbol.alturaPromedio())
-	//
-	//fmt.Println(arbol.totalComparaciones())
-	//
-	//fmt.Println(arbol.cantidadPromedioComparaciones())
-	//
-	//fmt.Println(arbol.densidad())
+	fmt.Println("altura arbol: ", alturaArbol(arbol.raiz))
+	fmt.Println("altura promedio: ", arbol.alturaPromedio())
+	fmt.Println("densidad: ", arbol.densidad())
+	fmt.Println("comparaciones promedio: ", arbol.cantidadPromedioComparaciones())
 
-	//arbol.dsw()
+
+
+
+
+
 
 }
