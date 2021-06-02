@@ -1,5 +1,6 @@
 package main
 
+/*
 import (
 	"fmt"
 	"math"
@@ -249,7 +250,7 @@ func (arbol *arbolBinarioBusqueda) buscarLlaves(lista []int) int {
 }
 
 //Números aleatorios
-
+/*
 func generarNumerosPseudoAleatorios(x int, n int) <-chan int {
 
 	p := 2048
@@ -407,7 +408,7 @@ func main() {
 	prueba := []int{1, 2, 8, 5, 63, 101, 102, 150, 140, 130}
 	//var listaBusqueda []int
 
-	//listaInsertar = generarNumeros(13, 1000)
+	listaInsertar = generarNumeros(13, 1000)
 	//listaBusqueda = generarNumeros(53, 10000)
 
 	arbol := new(arbolBinarioBusqueda)
@@ -435,4 +436,4 @@ func main() {
 
 	//arbol.dsw()
 
-}
+}*/
